@@ -1,0 +1,722 @@
+import React, { useState, useEffect, useMemo } from 'react';
+
+// --- Updated Data Structure with Full Specs, Product Class & Image URLs for ALL products ---
+const companyData = [
+  {
+    id: "dept1",
+    name: "Heavy Equipment",
+    brands: [
+      { // Hitachi - kept as is from the provided artifact
+        id: "brand1-1",
+        name: "Hitachi",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Hitachi",
+        products: [
+          { 
+            id: "p1-1-1", 
+            name: "ZX350LC-5G Excavator", 
+            shortSpecs: "35-ton class, advanced hydraulics, Stage III engine", 
+            model: "ZX350LC-5G", 
+            image: "https://placehold.co/200x150/334155/E2E8F0?text=ZX350LC-5G",
+            productClass: "Large Excavator",
+            fullSpecs: [
+              { specName: "Operating Weight", specValue: "34,900 kg" },
+              { specName: "Engine Model", specValue: "Isuzu GH-6HK1X" },
+              { specName: "Rated Power (Net)", specValue: "184 kW (246 HP) at 1,900 rpm" },
+              { specName: "Bucket Capacity (ISO Heaped)", specValue: "1.4 - 1.9 m³" },
+              { specName: "Max Digging Reach", specValue: "11.10 m" },
+              { specName: "Max Digging Depth", specValue: "7.38 m" },
+              { specName: "Arm Crowd Force (ISO)", specValue: "188 kN" },
+              { specName: "Bucket Digging Force (ISO)", specValue: "233 kN" },
+            ]
+          },
+          { 
+            id: "p1-1-6",
+            name: "ZX490LCH-5A Excavator", 
+            shortSpecs: "49-ton class, powerful and durable, Stage II engine", 
+            model: "ZX490LCH-5A", 
+            image: "https://placehold.co/200x150/334155/E2E8F0?text=ZX490LCH-5A",
+            productClass: "Large Excavator",
+            fullSpecs: [
+              { specName: "Operating Weight", specValue: "48,100 kg" },
+              { specName: "Engine Model", specValue: "Isuzu AH-6WG1XYSA-02" },
+              { specName: "Rated Power (Net)", specValue: "270 kW (362 HP) at 1,800 rpm" },
+              { specName: "Bucket Capacity (ISO Heaped)", specValue: "1.9 - 2.5 m³" },
+              { specName: "Max Digging Reach", specValue: "11.91 m" },
+              { specName: "Max Digging Depth", specValue: "7.77 m" },
+              { specName: "Arm Crowd Force (ISO)", specValue: "258 kN" },
+              { specName: "Bucket Digging Force (ISO)", specValue: "288 kN" },
+            ]
+          },
+          { 
+            id: "p1-1-2", 
+            name: "ZX33U-5A Mini Excavator", 
+            shortSpecs: "3.3-ton class, compact, versatile for tight spaces", 
+            model: "ZX33U-5A", 
+            image: "https://placehold.co/200x150/334155/E2E8F0?text=ZX33U-5A",
+            productClass: "Mini Excavator",
+            fullSpecs: [
+              { specName: "Operating Weight", specValue: "3,320 - 3,720 kg" },
+              { specName: "Engine Model", specValue: "Yanmar 3TNV88" },
+              { specName: "Rated Power (Net)", specValue: "21.2 kW (28.4 HP) at 2,400 rpm" },
+              { specName: "Bucket Capacity (ISO Heaped)", specValue: "0.08 - 0.10 m³" },
+              { specName: "Max Digging Reach", specValue: "5.17 m" },
+              { specName: "Max Digging Depth", specValue: "3.13 m" },
+            ]
+          },
+          { 
+            id: "p1-1-3", 
+            name: "ZW310-5A Wheel Loader", 
+            shortSpecs: "Powerful, excellent visibility, efficient hydraulics", 
+            model: "ZW310-5A", 
+            image: "https://placehold.co/200x150/334155/E2E8F0?text=ZW310-5A",
+            productClass: "Wheel Loader",
+            fullSpecs: [
+                { specName: "Operating Weight", specValue: "23,050 kg" },
+                { specName: "Engine Model", specValue: "Cummins QSL9" },
+                { specName: "Rated Power (Net)", specValue: "232 kW (311 HP)" },
+                { specName: "Bucket Capacity (Heaped)", specValue: "3.4 - 4.5 m³" },
+                { specName: "Static Tipping Load (Full Turn)", specValue: "15,630 kg" },
+            ]
+          },
+          { id: "p1-1-4", name: "EH1100-5 Rigid Dump Truck", shortSpecs: "Reduced maintenance, electronic drive system", model: "EH1100-5", image: "https://placehold.co/200x150/334155/E2E8F0?text=EH1100-5", productClass: "Dump Truck", fullSpecs: [] },
+          { id: "p1-1-5", name: "SCX1200-3 Crawler Crane", shortSpecs: "120-ton capacity crawler crane", model: "SCX1200-3", image: "https://placehold.co/200x150/334155/E2E8F0?text=SCX1200-3", productClass: "Crawler Crane", fullSpecs: [] },
+        ],
+        references: [ { id: "r1", client: "Major National Infrastructure Project", date: "2023-Ongoing" }],
+        contacts: [ { id: "c1", name: "Eng. Ahmed Mahmoud", role: "Sr. Sales Manager, Hitachi" }],
+      },
+      { // Grove - kept as is from the provided artifact
+        id: "brand1-2",
+        name: "Grove (by Manitowoc)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Grove",
+        products: [
+          { id: "p1-2-1", name: "GMK5250L All-Terrain Crane", shortSpecs: "250-ton capacity, MEGATRAK™", model: "GMK5250L", image: "https://placehold.co/200x150/334155/E2E8F0?text=GMK5250L", productClass: "All-Terrain Crane", fullSpecs: [] },
+          { id: "p1-2-2", name: "GRT8100 Rough-Terrain Crane", shortSpecs: "100-ton capacity, robust design", model: "GRT8100", image: "https://placehold.co/200x150/334155/E2E8F0?text=GRT8100", productClass: "Rough-Terrain Crane", fullSpecs: [] },
+          { id: "p1-2-3", name: "TMS9000-2 Truck-Mounted Crane", shortSpecs: "115-ton capacity, roadable", model: "TMS9000-2", image: "https://placehold.co/200x150/334155/E2E8F0?text=TMS9000-2", productClass: "Truck-Mounted Crane", fullSpecs: [] },
+        ],
+        references: [ { id: "r1-2-1", client: "Petrochemical Plant Construction", date: "2023" } ], 
+        contacts: [ { id: "c1-2-1", name: "Ms. Sarah Ibrahim", role: "Crane Sales Specialist" } ],
+      },
+      { // Sandvik - Updated structure
+        id: "brand1-3",
+        name: "Sandvik",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Sandvik",
+        products: [
+          { id: "p1-3-1", name: "Mobile Crushers & Screeners", shortSpecs: "Jaw, cone, impact crushers; high productivity", model: "QJ, QS, QI, QE Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Mobile+Crusher", productClass: "Crusher/Screener", fullSpecs: [] },
+          { id: "p1-3-2", name: "Drilling Rigs (Surface & Underground)", shortSpecs: "Top hammer, DTH, production drills", model: "Pantera™, Leopard™, Commando™, DD, DS, DL Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Drilling+Rig", productClass: "Drilling Rig", fullSpecs: [] },
+          { id: "p1-3-3", name: "Rock Cutting Tools & Systems", shortSpecs: "Mechanical cutting, boom headers, continuous miners", model: "Various", image: "https://placehold.co/200x150/334155/E2E8F0?text=Rock+Cutting", productClass: "Rock Cutting Tool", fullSpecs: [] },
+          { id: "p1-3-4", name: "Loading & Hauling Equipment (Underground)", shortSpecs: "LHDs, trucks for underground mining", model: "LH Series, TH Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Underground+Loader", productClass: "Underground Loader/Hauler", fullSpecs: [] },
+        ],
+        references: [ { id: "r1-3-1", client: "Quarry Operations Support", date: "Ongoing Contracts" } ],
+        contacts: [ { id: "c1-3-1", name: "Mining & Rock Technology Dept.", role: "Sales Consultant" } ],
+      },
+      { // Kalmar - Updated structure
+        id: "brand1-4",
+        name: "Kalmar",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Kalmar",
+        products: [
+          { id: "p1-4-1", name: "Reachstackers", shortSpecs: "Container handling, various capacities", model: "Gloria (DRG Series), Eco Reachstackers", image: "https://placehold.co/200x150/334155/E2E8F0?text=Reachstacker", productClass: "Reachstacker", fullSpecs: [] },
+          { id: "p1-4-2", name: "Terminal Tractors", shortSpecs: "For RoRo, LoLo, distribution centers", model: "TR618i, T2, Ottawa Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Terminal+Tractor", productClass: "Terminal Tractor", fullSpecs: [] },
+          { id: "p1-4-3", name: "Empty Container Handlers", shortSpecs: "Single and double stacking capabilities", model: "DCG Series (Empty), DCF Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Empty+Container+Handler", productClass: "Empty Container Handler", fullSpecs: [] },
+        ],
+        references: [ { id: "r1-4-1", client: "Major Egyptian Port Authorities", date: "2022-Present" } ],
+        contacts: [ { id: "c1-4-1", name: "Port Solutions Sales Team", role: "Sales Manager" } ],
+      },
+       { // Atlas Copco - Updated structure
+        id: "brand1-5",
+        name: "Atlas Copco",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Atlas+Copco",
+        products: [
+          { id: "p1-5-1", name: "Portable Air Compressors", shortSpecs: "Construction/mining, HardHat canopy", model: "XAS, XATS, XAVS Series; E-Air", image: "https://placehold.co/200x150/334155/E2E8F0?text=Portable+Compressor", productClass: "Portable Compressor", fullSpecs: [] },
+          { id: "p1-5-2", name: "Stationary Air Compressors", shortSpecs: "Industrial use, oil-injected/oil-free, VSD", model: "GA, GX, GR, ZR/ZT, AQ Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Stationary+Compressor", productClass: "Stationary Compressor", fullSpecs: [] },
+          { id: "p1-5-3", name: "Construction Tools", shortSpecs: "Pneumatic/hydraulic breakers, rock drills", model: "TEX, RTEX; Cobra; Hydraulic Attachments", image: "https://placehold.co/200x150/334155/E2E8F0?text=Construction+Tools", productClass: "Construction Tool", fullSpecs: [] },
+          { id: "p1-5-4", name: "Generators (Portable & Stationary)", shortSpecs: "Various power needs, reliable and efficient", model: "QAS, QES, QIS, P Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=AtlasCopco+Generator", productClass: "Generator", fullSpecs: [] },
+        ],
+        references: [ { id: "r1-5-1", client: "Manufacturing Sector Clients", date: "Multiple Installations" } ],
+        contacts: [ { id: "c1-5-1", name: "Compressor Technique Division", role: "Sales Engineer" } ],
+      },
+    ],
+  },
+  { // Generating Sets - Updated structure
+    id: "dept2",
+    name: "Generating Sets (Power Solutions)",
+    brands: [
+      {
+        id: "brand2-1",
+        name: "Volvo Penta (Generators)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Volvo+Penta+Genset",
+        products: [
+          { id: "p2-1-1", name: "Diesel Generators (Industrial)", shortSpecs: "Standby and prime power, robust design", model: "Based on TAD Series engines", image: "https://placehold.co/200x150/334155/E2E8F0?text=Industrial+Genset", productClass: "Diesel Generator", fullSpecs: [] },
+          { id: "p2-1-2", name: "Industrial Engines for Gensets", shortSpecs: "Reliable, fuel-efficient, compact design", model: "TAD, TWD Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Volvo+Genset+Engine", productClass: "Generator Engine", fullSpecs: [] },
+        ],
+        references: [ { id: "r2-1-1", client: "Data Centers, Hospitals", date: "Multiple Installations" } ],
+        contacts: [ { id: "c2-1-1", name: "Eng. Fatima Ali", role: "Power Solutions Sales Manager" } ],
+      },
+      {
+        id: "brand2-2",
+        name: "John Deere (Engines for Generators)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=John+Deere+Engines",
+        products: [
+          { id: "p2-2-1", name: "Generator Drive Engines", shortSpecs: "Robust, various kVA ratings, EPA/EU compliant", model: "PowerTech™ E, M, PSS Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=JD+Generator+Engine", productClass: "Generator Engine", fullSpecs: [] },
+        ],
+        references: [ { id: "r2-2-1", client: "Agricultural & Industrial Power Backup", date: "Ongoing Contracts" } ],
+        contacts: [ { id: "c2-2-1", name: "Engine Sales Division (Power Gen)", role: "Sales Specialist" } ],
+      },
+    ],
+  },
+  { // Pumps & Electronic Drives - Updated structure
+    id: "dept3",
+    name: "Pumps & Electronic Drives",
+    brands: [
+      {
+        id: "brand3-1",
+        name: "Aurora Pentair",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Aurora+Pentair",
+        products: [
+          { id: "p3-1-1", name: "Fire Pumps (Horizontal & Vertical)", shortSpecs: "UL/FM approved, split case, turbine, end suction", model: "Series 380, 480, 490, PVMX", image: "https://placehold.co/200x150/334155/E2E8F0?text=Fire+Pump", productClass: "Fire Pump", fullSpecs: [] },
+          { id: "p3-1-2", name: "HVAC Pumps", shortSpecs: "Commercial buildings, end suction, inline, split case", model: "Series 340, 320, 370", image: "https://placehold.co/200x150/334155/E2E8F0?text=HVAC+Pump", productClass: "HVAC Pump", fullSpecs: [] },
+          { id: "p3-1-3", name: "Industrial & Municipal Pumps", shortSpecs: "Water/wastewater, split case, turbine, non-clog", model: "Series 410, 420, 430, Spher-Flo®", image: "https://placehold.co/200x150/334155/E2E8F0?text=Industrial+Pump", productClass: "Industrial Pump", fullSpecs: [] },
+        ],
+        references: [ { id: "r3-1-1", client: "Commercial Real Estate (HVAC & Fire)", date: "Multiple Projects" } ],
+        contacts: [ { id: "c3-1-1", name: "Eng. Youssef Kamal", role: "Fluid Technology Sales Engineer" } ],
+      },
+    ],
+  },
+  { // Marine Equipment - Updated structure
+    id: "dept4",
+    name: "Marine Equipment",
+    brands: [
+      {
+        id: "brand4-1",
+        name: "Mercury Marine",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Mercury+Marine",
+        products: [
+          { id: "p4-1-1", name: "Outboard Engines", shortSpecs: "Verado, Pro XS, FourStroke, SeaPro, Jet", model: "2.5hp to V12 600hp", image: "https://placehold.co/200x150/334155/E2E8F0?text=Outboard+Engine", productClass: "Outboard Engine", fullSpecs: [] },
+          { id: "p4-1-2", name: "MerCruiser Sterndrives", shortSpecs: "Petrol engines with Alpha/Bravo drives", model: "4.5L, 6.2L, 8.2L MPI/HO", image: "https://placehold.co/200x150/334155/E2E8F0?text=Sterndrive", productClass: "Sterndrive Engine", fullSpecs: [] },
+          { id: "p4-1-3", name: "Mercury Diesel Engines", shortSpecs: "Inboard and Sterndrive diesel options", model: "2.0L to 6.7L TDI/QSD", image: "https://placehold.co/200x150/334155/E2E8F0?text=Mercury+Diesel", productClass: "Diesel Inboard/Sterndrive", fullSpecs: [] },
+        ],
+        references: [ { id: "r4-1-1", client: "Red Sea & Mediterranean Tourism Operators", date: "Ongoing Supply" } ],
+        contacts: [ { id: "c4-1-1", name: "Mr. Karim Adel", role: "Marine Sales Manager" } ],
+      },
+      {
+        id: "brand4-2",
+        name: "Volvo Penta (Marine)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Volvo+Penta+Marine",
+        products: [
+          { id: "p4-2-1", name: "Marine Propulsion Systems (Inboard)", shortSpecs: "Diesel/gasoline engines for leisure/commercial", model: "D-Series (Diesel), V-Series (Gasoline)", image: "https://placehold.co/200x150/334155/E2E8F0?text=Inboard+Engine", productClass: "Inboard Engine", fullSpecs: [] },
+          { id: "p4-2-2", name: "IPS (Inboard Performance System)", shortSpecs: "Pod system, joystick docking", model: "IPS10 to IPS30 Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Volvo+IPS", productClass: "Pod Drive System", fullSpecs: [] },
+        ],
+        references: [ { id: "r4-2-1", client: "Luxury Yacht Builders & Importers", date: "Partnerships" } ],
+        contacts: [ { id: "c4-2-1", name: "Marine Commercial Sales Dept.", role: "Key Account Manager" } ],
+      },
+      {
+        id: "brand4-3",
+        name: "Jobe Watersports",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Jobe+Watersports",
+        products: [
+          { id: "p4-3-1", name: "Inflatable Paddle Boards (SUPs)", shortSpecs: "All-round, touring, yoga, kids SUPs", model: "Duna, Yarra, Aero Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Jobe+SUP", productClass: "SUP Board", fullSpecs: [] },
+          { id: "p4-3-2", name: "Towables & Tubes", shortSpecs: "1 to 4+ person tubes, various shapes", model: "Airstream, Binar, Chaser", image: "https://placehold.co/200x150/334155/E2E8F0?text=Jobe+Towable", productClass: "Towable Tube", fullSpecs: [] },
+          { id: "p4-3-3", name: "Wakeboards & Bindings", shortSpecs: "For all skill levels, boat/cable park", model: "Breach, Vanity, Knox Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Jobe+Wakeboard", productClass: "Wakeboard", fullSpecs: [] },
+        ],
+        references: [ { id: "r4-3-1", client: "Coastal Resorts & Watersport Centers", date: "Seasonal Supply" } ],
+        contacts: [ { id: "c4-3-1", name: "Leisure Marine & Watersports Sales", role: "Sales Rep" } ],
+      },
+       {
+        id: "brand4-4",
+        name: "Vosta LMG",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Vosta+LMG",
+        products: [
+          { id: "p4-4-1", name: "Cutter Suction Dredgers (CSD)", shortSpecs: "Stationary dredgers, custom/standard designs", model: "CSD Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Vosta+CSD", productClass: "Dredger", fullSpecs: [] },
+          { id: "p4-4-2", name: "Trailing Suction Hopper Dredgers (TSHD)", shortSpecs: "Self-propelled dredgers", model: "TSHD Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Vosta+TSHD", productClass: "Dredger", fullSpecs: [] },
+        ],
+        references: [ { id: "r4-4-1", client: "Port Development & Canal Maintenance", date: "Specific Contracts" } ],
+        contacts: [ { id: "c4-4-1", name: "Specialized Marine Projects Division", role: "Project Manager" } ],
+      },
+      {
+        id: "brand4-5",
+        name: "Mitsubishi Heavy Industries (Marine)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=MHI+Marine",
+        products: [
+          { id: "p4-5-1", name: "Marine Diesel Engines", shortSpecs: "Propulsion and auxiliary engines", model: "Various MHI Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=MHI+Marine+Engine", productClass: "Marine Diesel Engine", fullSpecs: [] },
+          { id: "p4-5-2", name: "Propellers & Propulsion Systems", shortSpecs: "CPP, azimuth thrusters", model: "Various MHI Systems", image: "https://placehold.co/200x150/334155/E2E8F0?text=MHI+Propulsion", productClass: "Marine Propulsion System", fullSpecs: [] },
+        ],
+        references: [ { id: "r4-5-1", client: "Shipyards and Commercial Fleet Operators", date: "Ongoing" } ],
+        contacts: [ { id: "c4-5-1", name: "MHI Marine Solutions Dept.", role: "Sales Engineer" } ],
+      },
+    ],
+  },
+  { // Railway Equipment - Updated structure
+    id: "dept5",
+    name: "Railway Equipment",
+    brands: [
+      {
+        id: "brand5-1",
+        name: "Mitsubishi Heavy Industries (Railway Systems)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=MHI+Railway",
+        products: [
+          { id: "p5-1-1", name: "Automated Guideway Transit (AGT)", shortSpecs: "Urban transport, driverless systems", model: "Crystal Mover", image: "https://placehold.co/200x150/334155/E2E8F0?text=MHI+AGT", productClass: "AGT System", fullSpecs: [] },
+          { id: "p5-1-2", name: "Ticketing & Fare Collection Systems", shortSpecs: "Integrated solutions, AFC gates", model: "Custom Developed", image: "https://placehold.co/200x150/334155/E2E8F0?text=AFC+System", productClass: "Fare Collection System", fullSpecs: [] },
+        ],
+        references: [ { id: "r5-1-1", client: "National Railway Authority (Ticketing)", date: "Over 20 years" } ],
+        contacts: [ { id: "c5-1-1", name: "Transport Solutions Division", role: "Sales & Project Dev." } ],
+      },
+    ],
+  },
+  { // Workshop Equipment - Updated structure
+    id: "dept6",
+    name: "Workshop Equipment",
+    brands: [
+      {
+        id: "brand6-1",
+        name: "General Workshop Solutions (Multi-Brand Sourced)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Workshop+Solutions",
+        products: [
+          { id: "p6-1-1", name: "Vehicle Lifts", shortSpecs: "Two-post, four-post, scissor, mobile column", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Vehicle+Lift", productClass: "Vehicle Lift", fullSpecs: [] },
+          { id: "p6-1-2", name: "Welding Equipment", shortSpecs: "MIG, TIG, Arc welders, plasma cutters", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Welding+Eq", productClass: "Welding Equipment", fullSpecs: [] },
+          { id: "p6-1-3", name: "Diagnostic Tools", shortSpecs: "For engines, hydraulics, electronics, OBD", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Diagnostic+Tool", productClass: "Diagnostic Tool", fullSpecs: [] },
+        ],
+        references: [ { id: "r6-1-1", client: "Orascom Internal Workshops", date: "Ongoing" } ],
+        contacts: [ { id: "c6-1-1", name: "Workshop Supplies Team", role: "Sales Coordinator" } ],
+      },
+    ],
+  },
+  { // Security Systems - Updated structure
+    id: "dept7",
+    name: "Security Systems",
+    brands: [
+      {
+        id: "brand7-1",
+        name: "Integrated Security Solutions (Multi-Brand Sourced)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Integrated+Security",
+        products: [
+          { id: "p7-1-1", name: "CCTV & Video Surveillance", shortSpecs: "HD/IP cameras, NVRs, VMS, analytics", model: "OEMs (Vicon, Honeywell)", image: "https://placehold.co/200x150/334155/E2E8F0?text=CCTV+System", productClass: "CCTV System", fullSpecs: [] },
+          { id: "p7-1-2", name: "Access Control Systems", shortSpecs: "Biometric/card readers, controllers", model: "OEMs (Honeywell, JCI)", image: "https://placehold.co/200x150/334155/E2E8F0?text=Access+Control", productClass: "Access Control System", fullSpecs: [] },
+        ],
+        references: [ { id: "r7-1-1", client: "Commercial Buildings & Office Parks", date: "Multiple Installations" } ],
+        contacts: [ { id: "c7-1-1", name: "Security Solutions Sales Dept.", role: "Security Consultant" } ],
+      },
+       {
+        id: "brand7-2",
+        name: "Dafo Vehicle Fire Protection",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Dafo+Systems",
+        products: [
+          { id: "p7-2-1", name: "Vehicle Fire Suppression Systems", shortSpecs: "For buses, heavy machinery, mining eq.", model: "Dafo Forrex, SV-K Systems", image: "https://placehold.co/200x150/334155/E2E8F0?text=Dafo+Suppression", productClass: "Vehicle Fire Suppression", fullSpecs: [] },
+        ],
+        references: [ { id: "r7-2-1", client: "Public Transportation Companies", date: "Fleet Safety Upgrades" } ],
+        contacts: [ { id: "c7-2-1", name: "Specialized Safety Systems Unit", role: "Sales Engineer" } ],
+      },
+      {
+        id: "brand7-3",
+        name: "Vicon (Security)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Vicon+Security",
+        products: [
+          { id: "p7-3-1", name: "IP Cameras", shortSpecs: "Dome, bullet, PTZ, panoramic cameras", model: "Valerus, VAX Series", image: "https://placehold.co/200x150/334155/E2E8F0?text=Vicon+Cameras", productClass: "IP Camera", fullSpecs: [] },
+          { id: "p7-3-2", name: "Video Management Software (VMS)", shortSpecs: "Valerus VMS for recording & management", model: "Valerus", image: "https://placehold.co/200x150/334155/E2E8F0?text=Vicon+VMS", productClass: "VMS Software", fullSpecs: [] },
+        ],
+        references: [ { id: "r7-3-1", client: "Various Commercial & Industrial Clients", date: "Ongoing" } ],
+        contacts: [ { id: "c7-3-1", name: "Vicon Product Specialist", role: "Security Sales" } ],
+      },
+      {
+        id: "brand7-4",
+        name: "Honeywell (Security)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Honeywell+Security",
+        products: [
+          { id: "p7-4-1", name: "Integrated Security Platforms", shortSpecs: "Software for access control, video, intrusion", model: "Pro-Watch, MAXPRO", image: "https://placehold.co/200x150/334155/E2E8F0?text=Honeywell+Platform", productClass: "Security Platform", fullSpecs: [] },
+          { id: "p7-4-2", name: "Access Control Systems", shortSpecs: "Readers, controllers, cards, software", model: "NetAXS, WIN-PAK", image: "https://placehold.co/200x150/334155/E2E8F0?text=Honeywell+Access", productClass: "Access Control System", fullSpecs: [] },
+          { id: "p7-4-5", name: "Fire Alarm & Life Safety Systems", shortSpecs: "Addressable panels, detectors, notification", model: "Notifier, Morley-IAS", image: "https://placehold.co/200x150/334155/E2E8F0?text=Honeywell+Fire", productClass: "Fire Alarm System", fullSpecs: [] },
+        ],
+        references: [ { id: "r7-4-1", client: "Enterprise Level Security Projects", date: "Ongoing" } ],
+        contacts: [ { id: "c7-4-1", name: "Honeywell Solutions Consultant", role: "Security Sales" } ],
+      },
+      {
+        id: "brand7-5",
+        name: "Johnson Controls (Security & Fire)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Johnson+Controls",
+        products: [
+          { id: "p7-5-1", name: "Building Automation & Control (BAS)", shortSpecs: "Integrated HVAC, lighting, security, fire", model: "Metasys®", image: "https://placehold.co/200x150/334155/E2E8F0?text=JCI+BAS", productClass: "Building Automation System", fullSpecs: [] },
+          { id: "p7-5-2", name: "Access Control & Video (Tyco)", shortSpecs: "Kantech, Software House, AD, Exacq", model: "Various Tyco brands", image: "https://placehold.co/200x150/334155/E2E8F0?text=Tyco+Security", productClass: "Integrated Security (Tyco)", fullSpecs: [] },
+          { id: "p7-5-3", name: "Fire Detection & Suppression (Tyco)", shortSpecs: "Simplex, Ansul, Sprinklers", model: "Various Tyco brands", image: "https://placehold.co/200x150/334155/E2E8F0?text=Tyco+Fire", productClass: "Fire Safety System (Tyco)", fullSpecs: [] },
+        ],
+        references: [ { id: "r7-5-1", client: "Large Scale Facility Management", date: "Ongoing" } ],
+        contacts: [ { id: "c7-5-1", name: "Johnson Controls Sales Engineer", role: "Building Solutions" } ],
+      },
+    ],
+  },
+  { // Smart Irrigation - Updated structure
+    id: "dept8",
+    name: "Smart Irrigation Solutions",
+    brands: [
+      {
+        id: "brand8-1",
+        name: "Advanced Irrigation Systems (Multi-Brand Sourced)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Smart+Irrigation",
+        products: [
+          { id: "p8-1-1", name: "Drip Irrigation Systems", shortSpecs: "Water-efficient, driplines, emitters", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Drip+Irrigation", productClass: "Drip Irrigation", fullSpecs: [] },
+          { id: "p8-1-2", name: "Sprinkler & Micro-Sprinkler Systems", shortSpecs: "Landscape, turf, agriculture", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Sprinkler+System", productClass: "Sprinkler System", fullSpecs: [] },
+          { id: "p8-1-3", name: "Smart Irrigation Controllers & Sensors", shortSpecs: "Automated, weather-based, soil moisture", model: "Sourced OEMs", image: "https://placehold.co/200x150/334155/E2E8F0?text=Smart+Controller", productClass: "Irrigation Controller", fullSpecs: [] },
+        ],
+        references: [ { id: "r8-1-1", client: "Mega Agricultural Reclamation Projects", date: "Ongoing Partnerships" } ],
+        contacts: [ { id: "c8-1-1", name: "Agri-Tech & Irrigation Solutions Dept.", role: "Sales Agronomist" } ],
+      },
+    ],
+  },
+  { // Civil Aviation - Updated structure
+    id: "dept9",
+    name: "Civil Aviation Equipment",
+    brands: [
+      {
+        id: "brand9-1",
+        name: "Aviation Support Systems (Specialized OEMs)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Civil+Aviation+Eq",
+        products: [
+          { id: "p9-1-1", name: "ATC Navigation Systems", shortSpecs: "Ground-based aids (VOR, DME, ILS)", model: "Sourced per project", image: "https://placehold.co/200x150/334155/E2E8F0?text=ATC+Navigation", productClass: "ATC Navigation System", fullSpecs: [] },
+          { id: "p9-1-2", name: "ATC Voice Communication & Recording", shortSpecs: "Control towers/centers, VCS, recorders", model: "Sourced per project", image: "https://placehold.co/200x150/334155/E2E8F0?text=ATC+Voice+Comm", productClass: "ATC Communication System", fullSpecs: [] },
+        ],
+        references: [ { id: "r9-1-1", client: "Various Airports across Egypt", date: "Long-term Contracts" } ],
+        contacts: [ { id: "c9-1-1", name: "Aviation Projects Team", role: "Technical Sales Manager" } ],
+      },
+    ],
+  },
+  { // Equipment Rentals - Updated structure
+    id: "dept10",
+    name: "Equipment Rentals",
+    brands: [
+      {
+        id: "brand10-1",
+        name: "Orascom Rental Fleet (Multi-Brand)",
+        image: "https://placehold.co/400x300/0F172A/94A3B8?text=Equipment+Rentals",
+        products: [
+          { id: "p10-1-1", name: "Rental Earthmoving Equipment", shortSpecs: "Excavators, loaders, dozers, graders", model: "Hitachi, etc. (Subject to Availability)", image: "https://placehold.co/200x150/334155/E2E8F0?text=Rental+Earthmoving", productClass: "Rental Earthmover", fullSpecs: [] },
+          { id: "p10-1-2", name: "Rental Cranes", shortSpecs: "Mobile & Crawler, various capacities", model: "Grove, etc. (Subject to Availability)", image: "https://placehold.co/200x150/334155/E2E8F0?text=Rental+Cranes", productClass: "Rental Crane", fullSpecs: [] },
+          { id: "p10-1-3", name: "Rental Generators", shortSpecs: "Various kVA ratings", model: "Volvo Penta, Atlas Copco, etc. (Subject to Availability)", image: "https://placehold.co/200x150/334155/E2E8F0?text=Rental+Generators", productClass: "Rental Generator", fullSpecs: [] },
+        ],
+        references: [ { id: "r10-1-1", client: "Construction Contractors", date: "Ongoing Rental Service" } ],
+        contacts: [ { id: "c10-1-1", name: "Rental Desk Operations", role: "Rental Coordinator" } ],
+      },
+    ],
+  },
+];
+
+
+// --- Icon Components (Unchanged) ---
+const HomeIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> );
+const ChevronRightIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"></path></svg> );
+const BuildingIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22V12h6v10"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg> );
+const PackageIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16.5 9.4a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"></path><path d="M12 14.5V22"></path><path d="m10 13-1.8-1.8"></path><path d="M14 13l1.8-1.8"></path><path d="M7.5 9.4h9"></path><path d="M12 2v7.4"></path><path d="M7.5 9.4c0 4.6 2.5 6.5 4.5 8.1 2-1.6 4.5-3.5 4.5-8.1"></path><path d="M5 22h14"></path></svg> );
+const ListIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> );
+const UsersIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg> );
+const ClipboardListIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="M12 11h4" /><path d="M12 16h4" /><path d="M8 11h.01" /><path d="M8 16h.01" /></svg> );
+const OrascomLogo = ({ className }) => ( <svg className={className} width="48" height="48" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" rx="20" fill="#00A79D"/><path d="M50 150 L50 50 L100 50 L100 75 L125 75 L125 50 L150 50 L150 150 L125 150 L125 125 L75 125 L75 150 Z" fill="#FFFFFF"/><path d="M75 100 L125 100" stroke="#FFFFFF" strokeWidth="10"/></svg> );
+const SearchIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> );
+const XIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> );
+const ImageIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> );
+const LayersIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> );
+const CheckSquareIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> );
+
+
+// --- Main Application Component (Logic Unchanged, relies on updated data) ---
+function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [tableView, setTableView] = useState(null); 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedDepartment, selectedBrand, selectedProduct, tableView, searchTerm]);
+
+  useEffect(() => {
+    setSelectedDepartment(null);
+    setSelectedBrand(null);
+    setSelectedProduct(null);
+    setTableView(null);
+  }, [searchTerm]);
+
+  const handleSelectDepartment = (department) => {
+    setSelectedDepartment(department);
+    setSelectedBrand(null);
+    setSelectedProduct(null);
+    setTableView(null);
+  };
+
+  const handleSelectBrand = (brand) => {
+    setSelectedBrand(brand);
+    setSelectedProduct(null);
+    setTableView(null); 
+  };
+
+  const handleSelectProduct = (product) => {
+    setSelectedProduct(product);
+    setTableView(null); 
+  };
+  
+  const handleShowTable = (type) => {
+    setTableView(type);
+    setSelectedProduct(null); 
+  };
+  
+  const breadcrumbs = [{ name: "Home", action: () => { setSearchTerm(""); setSelectedDepartment(null); setSelectedBrand(null); setSelectedProduct(null); setTableView(null); } }];
+  if (selectedDepartment) {
+    breadcrumbs.push({ name: selectedDepartment.name, action: () => { setSelectedBrand(null); setSelectedProduct(null); setTableView(null); } });
+  }
+  if (selectedBrand) {
+    breadcrumbs.push({ name: selectedBrand.name, action: () => { setSelectedProduct(null); setTableView(null); } });
+  }
+  if (selectedProduct) {
+     breadcrumbs.push({ name: selectedProduct.name, action: null }); 
+  } else if (tableView && selectedBrand) { 
+    const viewName = tableView.charAt(0).toUpperCase() + tableView.slice(1);
+    breadcrumbs.push({ name: viewName.replace(/([A-Z])/g, ' $1').trim(), action: null });
+  }
+
+  const filteredDepartments = useMemo(() => {
+    if (!searchTerm) return companyData;
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    
+    return companyData.map(dept => {
+      const brandsInDept = dept.brands || [];
+      const matchingBrands = brandsInDept.filter(brand => {
+        const brandMatch = brand.name.toLowerCase().includes(lowerSearchTerm);
+        const productsInBrand = brand.products || [];
+        const productMatch = productsInBrand.some(prod => 
+          (prod.name && prod.name.toLowerCase().includes(lowerSearchTerm)) || 
+          (prod.model && prod.model.toLowerCase().includes(lowerSearchTerm)) ||
+          (prod.shortSpecs && prod.shortSpecs.toLowerCase().includes(lowerSearchTerm)) || 
+          (prod.productClass && prod.productClass.toLowerCase().includes(lowerSearchTerm))
+        );
+        return brandMatch || productMatch;
+      }).map(brand => { 
+        const productsInBrand = brand.products || [];
+        const matchingProducts = productsInBrand.filter(prod => 
+            (prod.name && prod.name.toLowerCase().includes(lowerSearchTerm)) || 
+            (prod.model && prod.model.toLowerCase().includes(lowerSearchTerm)) ||
+            (prod.shortSpecs && prod.shortSpecs.toLowerCase().includes(lowerSearchTerm)) ||
+            (prod.productClass && prod.productClass.toLowerCase().includes(lowerSearchTerm))
+        );
+        if (brand.name.toLowerCase().includes(lowerSearchTerm) && matchingProducts.length === 0 && productsInBrand.length > 0) {
+             return { ...brand, products: productsInBrand };
+        }
+        return { ...brand, products: matchingProducts };
+      });
+
+      if (dept.name.toLowerCase().includes(lowerSearchTerm) || matchingBrands.length > 0) {
+        return { ...dept, brands: matchingBrands.length > 0 ? matchingBrands : (dept.name.toLowerCase().includes(lowerSearchTerm) ? brandsInDept : []) };
+      }
+      return null;
+    }).filter(Boolean);
+  }, [searchTerm]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100 font-sans p-4 md:p-8 selection:bg-teal-500 selection:text-white">
+      <header className="mb-8 md:mb-12">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div className="flex items-center space-x-3">
+                 <OrascomLogo className="h-10 w-10 md:h-12 md:w-12 text-teal-500" />
+                <h1 className="text-3xl md:text-4xl font-bold text-teal-400">Orascom Services</h1>
+            </div>
+            <p className="text-lg text-sky-300">Sales Directory</p>
+        </div>
+        <div className="relative mb-6">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"> <SearchIcon className="h-5 w-5 text-slate-400" /> </div>
+          <input type="search" name="search" id="search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search machinery, model, brand..." className="block w-full bg-slate-700 border border-slate-600 rounded-lg py-3 pl-10 pr-10 text-slate-100 placeholder-slate-400 focus:ring-teal-500 focus:border-teal-500 focus:bg-slate-600 transition-colors"/>
+          {searchTerm && ( <button onClick={() => setSearchTerm("")} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-400" aria-label="Clear search"> <XIcon className="h-5 w-5" /> </button> )}
+        </div>
+        <nav aria-label="Breadcrumb" className="text-sm text-slate-400 flex items-center space-x-2 bg-slate-800 p-3 rounded-lg shadow-md">
+          {breadcrumbs.map((crumb, index) => (
+            <React.Fragment key={index}>
+              {index > 0 && <ChevronRightIcon className="h-4 w-4 text-slate-500" />}
+              <button onClick={crumb.action} className={`hover:text-teal-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-slate-800 rounded px-1 ${!crumb.action ? 'font-semibold text-slate-100 cursor-default' : 'text-slate-400'}`} disabled={!crumb.action} aria-current={!crumb.action ? "page" : undefined}>
+                {index === 0 && <HomeIcon className="inline-block h-4 w-4 mr-1.5 mb-0.5" />} {crumb.name}
+              </button>
+            </React.Fragment>
+          ))}
+        </nav>
+      </header>
+
+      <main className="bg-slate-800 shadow-2xl rounded-xl p-6 md:p-8">
+        {!selectedDepartment && !selectedProduct && <DepartmentList departments={filteredDepartments} onSelectDepartment={handleSelectDepartment} searchTerm={searchTerm} />}
+        
+        {selectedDepartment && !selectedBrand && !selectedProduct && (
+          <BrandList department={selectedDepartment} onSelectBrand={handleSelectBrand} searchTerm={searchTerm} />
+        )}
+        
+        {selectedBrand && !tableView && !selectedProduct && (
+          <BrandDetail brand={selectedBrand} onShowTable={handleShowTable} />
+        )}
+        
+        {tableView && selectedBrand && !selectedProduct && (
+          <DataTable 
+            type={tableView} 
+            brand={selectedBrand} 
+            onSelectProduct={handleSelectProduct} 
+            searchTerm={searchTerm}
+          />
+        )}
+
+        {selectedProduct && selectedBrand && ( 
+            <ProductDetailView 
+                product={selectedProduct} 
+                brandProducts={selectedBrand.products || []} 
+                brandName={selectedBrand.name}
+            />
+        )}
+      </main>
+
+      <footer className="mt-12 text-center text-slate-500 text-sm">
+        <p>&copy; {new Date().getFullYear()} Orascom Services Directory. For internal use only.</p>
+        <p>Data is illustrative. Version 1.4.1 (Full Data Structure)</p> {/* Updated version */}
+      </footer>
+    </div>
+  );
+}
+
+// --- Component for Listing Departments (UI Unchanged) ---
+function DepartmentList({ departments, onSelectDepartment, searchTerm }) {
+  if (searchTerm && departments.length === 0) { return ( <div className="text-center py-10"> <SearchIcon className="mx-auto h-12 w-12 text-slate-500" /> <h3 className="mt-2 text-lg font-medium text-slate-300">No Departments Found</h3> <p className="mt-1 text-sm text-slate-400"> Your search for "{searchTerm}" did not match any departments or their contents. Try a different term. </p> </div> ); }
+  return ( <div> <h2 className="text-3xl font-semibold mb-6 text-slate-200 flex items-center"> <BuildingIcon className="h-8 w-8 mr-3 text-sky-400" /> {searchTerm ? `Filtered Departments for "${searchTerm}"` : "Company Departments"} </h2> <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {departments.map(dept => ( <button key={dept.id} onClick={() => onSelectDepartment(dept)} className="bg-slate-700 hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-xl p-6 rounded-lg shadow-lg text-left focus:outline-none focus:ring-4 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800" aria-label={`View details for ${dept.name} department`}> <h3 className="text-xl font-semibold text-slate-100 mb-1">{dept.name}</h3> <p className="text-sm text-slate-400">{(dept.brands && dept.brands.length) || 0} Brand(s) / Area(s) found</p> <div className="mt-4 text-teal-400 font-medium flex items-center justify-end"> View Details <ChevronRightIcon className="h-5 w-5 ml-1.5" /> </div> </button> ))} </div> </div> );
+}
+
+// --- Component for Listing Brands in a Department (UI Unchanged) ---
+function BrandList({ department, onSelectBrand, searchTerm }) {
+  const brandsToList = useMemo(() => { const brandsInDept = department.brands || []; if (!searchTerm) return brandsInDept; const lowerSearchTerm = searchTerm.toLowerCase(); return brandsInDept.filter(brand => brand.name.toLowerCase().includes(lowerSearchTerm) || ((brand.products || []).some(prod => (prod.name && prod.name.toLowerCase().includes(lowerSearchTerm)) || (prod.model && prod.model.toLowerCase().includes(lowerSearchTerm)) || (prod.shortSpecs && prod.shortSpecs.toLowerCase().includes(lowerSearchTerm)) || (prod.productClass && prod.productClass.toLowerCase().includes(lowerSearchTerm)) )) ); }, [department.brands, searchTerm]);
+  if (searchTerm && brandsToList.length === 0) { return ( <div className="text-center py-10"> <SearchIcon className="mx-auto h-12 w-12 text-slate-500" /> <h3 className="mt-2 text-lg font-medium text-slate-300">No Brands Found</h3> <p className="mt-1 text-sm text-slate-400"> Your search for "{searchTerm}" did not match any brands in {department.name}. </p> </div> ); }
+  return ( <div> <h2 className="text-3xl font-semibold mb-6 text-slate-200 flex items-center"> <PackageIcon className="h-8 w-8 mr-3 text-sky-400" /> Brands in {department.name} {searchTerm ? `(matching "${searchTerm}")` : ""} </h2> {brandsToList && brandsToList.length > 0 ? ( <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {brandsToList.map(brand => ( <button key={brand.id} onClick={() => onSelectBrand(brand)} className="bg-slate-700 hover:bg-slate-600 transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-xl rounded-lg shadow-lg text-left focus:outline-none focus:ring-4 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-slate-800 overflow-hidden" aria-label={`Explore ${brand.name} brand`}> <img src={brand.image || `https://placehold.co/400x300/0F172A/94A3B8?text=${encodeURIComponent(brand.name)}`} alt={`${brand.name}`} className="w-full h-48 object-cover mb-4 bg-slate-600" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/400x300/0F172A/94A3B8?text=Image+Error`; }}/> <div className="p-6 pt-0"> <h3 className="text-xl font-semibold text-slate-100 mb-1">{brand.name}</h3> <p className="text-sm text-slate-400"> {((brand.products || []).length) || 0} Product(s) listed </p> <div className="mt-4 text-teal-400 font-medium flex items-center justify-end"> Explore Brand <ChevronRightIcon className="h-5 w-5 ml-1.5" /> </div> </div> </button> ))} </div> ) : ( <p className="text-slate-400 italic">No brands listed for this department {searchTerm ? `matching "${searchTerm}"` : "yet"}.</p> )} </div> );
+}
+
+// --- Component for Brand Details (UI Unchanged) ---
+function BrandDetail({ brand, onShowTable }) {
+  const buttonStyle = "w-full bg-teal-500 hover:bg-teal-600 text-slate-900 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:scale-102 flex items-center justify-center space-x-2.5 focus:outline-none focus:ring-4 focus:ring-teal-300 focus:ring-offset-2 focus:ring-offset-slate-800";
+  return ( <div> <div className="mb-8 text-center"> <img src={brand.image || `https://placehold.co/600x400/0F172A/94A3B8?text=${encodeURIComponent(brand.name)}`} alt={`Showcasing ${brand.name}`} className="w-full max-w-2xl mx-auto h-auto md:h-80 object-contain rounded-lg shadow-lg mb-4 bg-slate-600" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/0F172A/94A3B8?text=Image+Error`; }}/> <h2 className="text-4xl font-bold mb-3 text-slate-100">{brand.name}</h2> <p className="text-slate-400 text-lg">Select an option below to view details.</p> </div> <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto"> <button onClick={() => onShowTable('products')} className={buttonStyle} aria-label={`View products for ${brand.name}`}> <ClipboardListIcon className="h-5 w-5" /> <span>View Products</span> </button> <button onClick={() => onShowTable('references')} className={buttonStyle} aria-label={`View reference list for ${brand.name}`}> <ListIcon className="h-5 w-5" /> <span>View Reference List</span> </button> <button onClick={() => onShowTable('contacts')} className={buttonStyle} aria-label={`View key contacts for ${brand.name}`}> <UsersIcon className="h-5 w-5" /> <span>View Key Contacts</span> </button> </div> </div> );
+}
+
+// --- DataTable (UI Unchanged, logic for itemsToDisplay uses shortSpecs and productClass) ---
+function DataTable({ type, brand, onSelectProduct, searchTerm }) { 
+  const data = brand[type]; 
+  const brandName = brand.name;
+
+  const itemsToDisplay = useMemo(() => {
+    if (!data) return [];
+    if (type === 'products' && searchTerm) {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return data.filter(prod => 
+            (prod.name && prod.name.toLowerCase().includes(lowerSearchTerm)) || 
+            (prod.model && prod.model.toLowerCase().includes(lowerSearchTerm)) ||
+            (prod.shortSpecs && prod.shortSpecs.toLowerCase().includes(lowerSearchTerm)) ||
+            (prod.productClass && prod.productClass.toLowerCase().includes(lowerSearchTerm))
+        );
+    }
+    return data;
+  }, [data, type, searchTerm]);
+
+  if (!itemsToDisplay || itemsToDisplay.length === 0) {
+    return ( <div className="text-center py-10"> <svg className="mx-auto h-12 w-12 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"> <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /> </svg> <h3 className="mt-2 text-lg font-medium text-slate-300">No Information Available</h3> <p className="mt-1 text-sm text-slate-400"> There is currently no {type.replace(/([A-Z])/g, ' $1').toLowerCase()} information listed for {brandName} {searchTerm ? ` matching "${searchTerm}"` : ""}. </p> </div> );
+  }
+
+  let headers = [];
+  let titleType = type.charAt(0).toUpperCase() + type.slice(1);
+  titleType = titleType.replace(/([A-Z])/g, ' $1').trim(); 
+
+  switch (type) {
+    case 'products': headers = ['Image', 'Product Name', 'Model', 'Short Specs']; break;
+    case 'references': headers = ['Key Client / Project', 'Date / Period']; break;
+    case 'contacts': headers = ['Name', 'Role / Department']; break;
+    default: return <p className="text-red-400">Error: Invalid data type.</p>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <h3 className="text-2xl font-semibold mb-6 text-slate-200">{titleType} for {brandName} {searchTerm ? `(matching "${searchTerm}")` : ""}</h3>
+      <div className="shadow-lg rounded-lg overflow-hidden bg-slate-700/50">
+        <table className="min-w-full leading-normal">
+          <thead className="bg-slate-700"><tr>{headers.map(header => ( <th key={header} scope="col" className="px-5 py-4 border-b-2 border-slate-600 text-left text-xs font-semibold text-sky-300 uppercase tracking-wider">{header}</th> ))}</tr></thead>
+          <tbody className="bg-slate-800">
+            {itemsToDisplay.map((item, index) => (
+              <tr key={item.id || index} className={`border-b border-slate-700 hover:bg-slate-600/70 transition-colors duration-150 ${index % 2 === 0 ? 'bg-slate-700/20' : ''} ${type === 'products' ? 'cursor-pointer' : ''}`} onClick={type === 'products' ? () => onSelectProduct(item) : undefined} tabIndex={type === 'products' ? 0 : undefined} onKeyPress={type === 'products' ? (e) => e.key === 'Enter' && onSelectProduct(item) : undefined} role={type === 'products' ? "button" : undefined} aria-label={type === 'products' ? `View details for ${item.name}` : undefined}>
+                {type === 'products' && ( <> <td className="px-5 py-4 text-sm"><img src={item.image || 'https://placehold.co/100x75/334155/94A3B8?text=No+Image'} alt={`${item.name || 'Product'}`} className="w-24 h-16 object-contain rounded bg-slate-600" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/100x75/334155/94A3B8?text=Error`; }}/></td> <td className="px-5 py-4 text-sm text-slate-100 whitespace-nowrap font-medium">{item.name || 'N/A'}</td> <td className="px-5 py-4 text-sm text-slate-300 whitespace-nowrap">{item.model || 'N/A'}</td> <td className="px-5 py-4 text-sm text-slate-300">{item.shortSpecs || 'N/A'}</td> </>)}
+                {type === 'references' && ( <> <td className="px-5 py-4 text-sm text-slate-100">{item.client || 'N/A'}</td> <td className="px-5 py-4 text-sm text-slate-300 whitespace-nowrap">{item.date || 'N/A'}</td> </>)}
+                {type === 'contacts' && ( <> <td className="px-5 py-4 text-sm text-slate-100 whitespace-nowrap">{item.name || 'N/A'}</td> <td className="px-5 py-4 text-sm text-slate-300">{item.role || 'N/A'}</td> </>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// --- ProductDetailView Component (UI Unchanged) ---
+function ProductDetailView({ product, brandProducts, brandName }) {
+  const [comparisonItems, setComparisonItems] = useState([]);
+  const maxCompareItems = 2; 
+
+  const toggleComparisonItem = (itemToCompare) => {
+    setComparisonItems(prev => {
+      const isAlreadySelected = prev.find(p => p.id === itemToCompare.id);
+      if (isAlreadySelected) {
+        return prev.filter(p => p.id !== itemToCompare.id);
+      } else {
+        if (prev.length < maxCompareItems) { return [...prev, itemToCompare]; }
+        return prev; 
+      }
+    });
+  };
+
+  const similarProducts = useMemo(() => {
+    if (!product || !brandProducts) return [];
+    return brandProducts.filter(p => p.id !== product.id && p.productClass === product.productClass);
+  }, [product, brandProducts]);
+
+  if (!product) return null;
+
+  const allProductsToCompare = [product, ...comparisonItems];
+  const allSpecNames = useMemo(() => {
+    const specSet = new Set();
+    allProductsToCompare.forEach(p => { (p.fullSpecs || []).forEach(spec => specSet.add(spec.specName)); });
+    return Array.from(specSet);
+  }, [allProductsToCompare]);
+
+  return (
+    <div className="space-y-8">
+      <div className="md:flex md:space-x-8 items-start">
+        <img src={product.image || `https://placehold.co/600x400/334155/E2E8F0?text=${encodeURIComponent(product.name)}`} alt={`Image of ${product.name}`} className="w-full md:w-1/3 h-auto object-contain rounded-lg shadow-lg mb-6 md:mb-0 bg-slate-700 p-2" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x400/334155/E2E8F0?text=Error`; }}/>
+        <div className="md:w-2/3">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-2">{product.name}</h2>
+          <p className="text-lg text-sky-300 mb-1">Model: {product.model || 'N/A'}</p>
+          <p className="text-md text-slate-400 mb-4">Class: {product.productClass || 'N/A'}</p>
+          <p className="text-md text-slate-300 mb-6">{product.shortSpecs || 'No short description available.'}</p>
+          <h3 className="text-2xl font-semibold text-slate-200 mb-3">Full Specifications</h3>
+          {(product.fullSpecs && product.fullSpecs.length > 0) ? ( <ul className="space-y-2 bg-slate-700/50 p-4 rounded-lg"> {product.fullSpecs.map((spec, index) => ( <li key={index} className="flex justify-between border-b border-slate-600/50 py-2 last:border-b-0"> <span className="font-medium text-slate-300">{spec.specName}:</span> <span className="text-slate-200 text-right">{spec.specValue}</span> </li> ))} </ul> ) : ( <p className="text-slate-400 italic">No detailed specifications available for this product.</p> )}
+        </div>
+      </div>
+      {similarProducts.length > 0 && (
+        <div className="mt-10 pt-8 border-t border-slate-700">
+          <h3 className="text-2xl font-semibold text-slate-200 mb-4 flex items-center"> <LayersIcon className="h-7 w-7 mr-3 text-sky-400" /> Compare with other {product.productClass}s from {brandName} </h3>
+          <p className="text-sm text-slate-400 mb-4">Select up to {maxCompareItems} other models to compare side-by-side.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+            {similarProducts.map(itemToCompare => (
+              <button key={itemToCompare.id} onClick={() => toggleComparisonItem(itemToCompare)} className={`p-4 rounded-lg transition-all duration-150 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 ${comparisonItems.find(p => p.id === itemToCompare.id) ? 'bg-teal-600 text-white ring-teal-500' : 'bg-slate-600 hover:bg-slate-500 text-slate-200 ring-sky-500'}`}>
+                <div className="flex items-center mb-2">
+                    <div className={`mr-3 p-1 rounded-full border-2 ${comparisonItems.find(p => p.id === itemToCompare.id) ? 'border-white bg-white' : 'border-slate-400'}`}> {comparisonItems.find(p => p.id === itemToCompare.id) && <CheckSquareIcon className="h-3 w-3 text-teal-700"/>} {!comparisonItems.find(p => p.id === itemToCompare.id) && <div className="h-3 w-3"></div>} </div>
+                    <span className="font-medium">{itemToCompare.name}</span>
+                </div> <p className="text-xs opacity-80">{itemToCompare.model}</p>
+              </button>
+            ))}
+          </div>
+          {(comparisonItems.length > 0 || (allProductsToCompare.length > 0 && allSpecNames.length > 0)) && (
+            <div className="overflow-x-auto mt-6">
+              <h4 className="text-xl font-semibold text-slate-200 mb-3">Comparison Table</h4>
+              <table className="min-w-full leading-normal bg-slate-700/50 rounded-lg shadow">
+                <thead> <tr className="bg-slate-700"> <th className="px-5 py-3 border-b-2 border-slate-600 text-left text-xs font-semibold text-sky-300 uppercase tracking-wider sticky left-0 bg-slate-700 z-10">Specification</th> {allProductsToCompare.map(p => ( <th key={p.id} className="px-5 py-3 border-b-2 border-slate-600 text-left text-xs font-semibold text-sky-300 uppercase tracking-wider"> {p.name} ({p.model}) </th> ))} </tr> </thead>
+                <tbody className="bg-slate-800">
+                  {allSpecNames.map(specName => ( <tr key={specName} className="border-b border-slate-700 hover:bg-slate-600/70"> <td className="px-5 py-4 text-sm text-slate-200 font-medium sticky left-0 bg-slate-800 z-10">{specName}</td> {allProductsToCompare.map(p => { const spec = (p.fullSpecs || []).find(s => s.specName === specName); return ( <td key={`${p.id}-${specName}`} className="px-5 py-4 text-sm text-slate-300"> {spec ? spec.specValue : 'N/A'} </td> ); })} </tr> ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
